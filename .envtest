@@ -1,0 +1,9 @@
+MONGO_URI=mongodb://localhost:27017/
+DB_NAME=testpage
+PORT=4000
+HOST_NAME=localhost
+SALT_ROUNDS=10
+JWT_SECRET="palabra_secreta"
+API_VERSION=1.0.0
+MAX_VERSION=2.0.0
+MIN_VERSION=1.0.0
