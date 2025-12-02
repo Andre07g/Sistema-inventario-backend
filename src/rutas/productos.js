@@ -4,8 +4,8 @@ import { Router } from "express";
 
 // IMPORTE CONTROLADORES
 
-import { obtenerProductos, crearProducto, editarProducto } from "../controladores/productos.js";
-import { añadirLote } from "../controladores/productos.js";
+import { obtenerProductos, crearProducto, editarProducto, eliminarProducto } from "../controladores/productos.js";
+import { añadirLote, editarLote } from "../controladores/productos.js";
 
 // IMPORTE MIDDLEWARES
 
@@ -23,13 +23,15 @@ const router = Router();
 
 // Productos
 
-router.get("/",obtenerProductos);
-router.post("/",crearProductoDTO, validarCampos, crearProducto)
-router.patch("/",editarProductoDTO, validarCampos, editarProducto)
+router.get("/obtener/",obtenerProductos);
+router.post("/crear/",crearProductoDTO, validarCampos, crearProducto)
+router.patch("/editar/:id_producto",editarProductoDTO, validarCampos, editarProducto)
+router.delete("/eliminar/:id_producto",eliminarProducto)
 
 // Lotes
 
-router.put("/aniadir_lote/",añadirLote)
+router.put("/:id_producto/aniadir_lote/",añadirLote)
+router.patch("/:id_producto/editar_lote/:numero_lote", editarLote)
 
 // EXPORTE
  

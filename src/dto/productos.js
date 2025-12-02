@@ -155,3 +155,23 @@ export const editarProductoDTO = [
         .isFloat({ min: 0 }),
 
 ];
+
+
+export const editarLoteDTO = [
+
+    body("cantidad")
+    .optional()
+        .isFloat({ min: 0 })
+        .withMessage("Cantidad debe ser un número"),
+
+    // Fecha de vencimiento para perecederos
+    body("fecha_vencimiento")
+        .optional()
+        .custom((value, { req }) => {
+            if (req.body.tipo === "perecedero" && !value) {
+                throw new Error("Los productos perecederos requieren fecha de vencimiento");
+            }
+            return true;
+        })
+        .isISO8601().withMessage("Fecha de vencimiento inválida")
+];
