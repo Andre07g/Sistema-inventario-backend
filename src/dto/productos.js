@@ -82,4 +82,71 @@ export const eliminarLoteDTO = [
         .withMessage("id_lote debe ser un texto válido")
 ];
 
+export const editarProductoDTO = [
+       // Tipo (opcional en edición)
+    body("tipo")
+        .optional()
+        .isString()
+        .isIn(["simple", "perecedero", "no-perecedero"])
+        .withMessage("Tipo inválido"),
 
+    // _id del producto obligatorio
+    body("_id")
+        .matches(/^[0-9a-fA-F]{24}$/)
+        .withMessage("El ID del producto es inválido"),
+
+    // Nombre
+    body("nombre")
+        .optional()
+        .isString()
+        .trim()
+        .notEmpty(),
+
+    // Categoría
+    body("categoria")
+        .optional()
+        .isString()
+        .trim()
+        .notEmpty(),
+
+    // Descripción
+    body("descripcion")
+        .optional()
+        .isString()
+        .trim(),
+
+    // Precio compra
+    body("precio_de_compra")
+        .optional()
+        .isFloat({ min: 1 }),
+
+    // Precio venta
+    body("precio_de_venta")
+        .optional()
+        .isFloat({ min: 1 }),
+
+    // Unidad de medida
+    body("unidad_de_medida")
+        .optional()
+        .isString()
+        .isIn(["unidad", "kilogramo", "litro"]),
+
+    // SKU
+    body("SKU")
+        .optional()
+        .isString()
+        .trim()
+        .notEmpty(),
+
+    // STOCK solo editable si es simple
+    body("stock")
+        .optional()
+        .custom((value, { req }) => {
+            if (req.body.tipo === "perecedero" || req.body.tipo === "no-perecedero") {
+                throw new Error("Solo los productos simples pueden tener stock numérico");
+            }
+            return true;
+        })
+        .isFloat({ min: 0 }),
+
+];

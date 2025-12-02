@@ -17,3 +17,14 @@ export async function obtenerProductosServicio(empresa) {
     return await db.collection(COLECCION_PRODUCTOS).find({id_empresa:new ObjectId(empresa)}).toArray();
 }
 
+export async function crearUnProductoServicio(producto){
+    const db = await obtenerBD()
+    return await db.collection(COLECCION_PRODUCTOS).insertOne(producto);
+}
+
+export async function editarUnProductoServicio (producto){
+    const id_producto = producto._id
+    delete producto._id
+    const db = await obtenerBD()
+    return await db.collection(COLECCION_PRODUCTOS).updateOne({_id:new ObjectId(id_producto)},{ $set: producto })
+}
