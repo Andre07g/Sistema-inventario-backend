@@ -71,3 +71,8 @@ export async function editarLoteServicio(lote_info, id_producto, tipo) {
         { $set: campos }
     );
 }
+
+export async function eliminarLoteServicio(numero_lote, id_producto){
+    const db = await obtenerBD();
+    return await db.collection(COLECCION_PRODUCTOS).updateOne({_id:new ObjectId(id_producto),"lotes.numero_lote":numero_lote},{$pull:{lotes:{numero_lote:numero_lote}}})
+}

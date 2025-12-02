@@ -5,7 +5,7 @@ import { Router } from "express";
 // IMPORTE CONTROLADORES
 
 import { obtenerProductos, crearProducto, editarProducto, eliminarProducto } from "../controladores/productos.js";
-import { añadirLote, editarLote } from "../controladores/productos.js";
+import { añadirLote, editarLote, eliminarLote } from "../controladores/productos.js";
 
 // IMPORTE MIDDLEWARES
 
@@ -32,6 +32,7 @@ router.delete("/eliminar/:id_producto",eliminarProducto)
 
 router.put("/:id_producto/aniadir_lote/",añadirLote)
 router.patch("/:id_producto/editar_lote/:numero_lote", editarLote)
+router.patch("/:id_producto/eliminar_lote/:numero_lote", eliminarLote)
 
 // EXPORTE
  

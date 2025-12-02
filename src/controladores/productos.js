@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 
 
 import { obtenerProductosServicio, crearUnProductoServicio, editarUnProductoServicio, eliminarUnProductoServicio } from "../servicios/productos.js";
-import { añadirLoteServicio, calcularStockPorLotesServicio, editarLoteServicio } from "../servicios/productos.js";
+import { añadirLoteServicio, calcularStockPorLotesServicio, editarLoteServicio, eliminarLoteServicio } from "../servicios/productos.js";
 
 
 
@@ -93,6 +93,17 @@ export async function editarLote(req, res){
         if (resultado.modifiedCount===0){throw new Error("Error al modificar lote");}
         await calcularStockPorLotesServicio(req.params.id_producto)
         res.status(200).json({"Mensaje":"Lote modificado correctamente"})
+    } catch (error) {
+        res.status(500).json({error:error.message})
+    }
+}
+
+export async function eliminarLote(req, res) {
+    try {
+        const resultado = await eliminarLoteServicio(req.params.numero_lote, req.params.id_producto);
+        if (resultado.modifiedCount===0){throw new Error("Error al eliminar lote");}
+        await calcularStockPorLotesServicio(req.params.id_producto)
+        res.status(200).json({"Mensaje":"Se eliminó el lote correctamente"})
     } catch (error) {
         res.status(500).json({error:error.message})
     }
