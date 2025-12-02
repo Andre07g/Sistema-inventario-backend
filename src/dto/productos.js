@@ -56,6 +56,11 @@ export const crearProductoDTO = [
 ];
 
 export const agregarLoteDTO = [
+    body("numero_lote")
+    .isString()
+    .notEmpty()
+    .withMessage("El numero de lote no debe estar vacio"),
+
     body("cantidad")
         .isFloat({ min: 0 })
         .withMessage("Cantidad debe ser un número"),

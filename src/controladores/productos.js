@@ -6,6 +6,9 @@ import { ObjectId } from "mongodb";
 
 
 import { obtenerProductosServicio, crearUnProductoServicio, editarUnProductoServicio } from "../servicios/productos.js";
+import { añadirLoteServicio, calcularStockPorLotesServicio } from "../servicios/productos.js";
+
+
 
 // FUNCIONES
 
@@ -45,5 +48,24 @@ export async function editarProducto(req, res){
         res.status(200).json({"mensaje":"Se actualizaron los datos"})
     } catch (error) {
         res.status(500).json({error:error})
+    }
+}
+
+
+export async function añadirLote(req, res) {
+    try {
+        const { numero_lote, cantidad, fecha_ingreso } = req.body;
+        if(req.body.fecha_vencimiento && fecha_ingreso>req.body.fecha_vencimiento){
+            throw new Error("La fecha de vencimiento no puede ser antes que la fecha de ingreso");
+        }
+        const lote = {numero_lote, cantidad, fecha_ingreso}
+        if (req.body.tipo==="perecedero"){
+            lote.fecha_vencimiento = req.body.fecha_vencimiento
+        }
+        const lote_creacion = await añadirLoteServicio(lote, req.body._id)
+        const nuevoStock = await calcularStockPorLotesServicio(req.body._id)
+        res.status(200).json({"Mensaje":"Lote creado correctamente"})
+    } catch (error) {
+        res.status(500).json({error:error.message})
     }
 }
