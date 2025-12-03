@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 
 
 import { obtenerProductosServicio, crearUnProductoServicio, editarUnProductoServicio, eliminarUnProductoServicio } from "../servicios/productos.js";
-import { añadirLoteServicio, calcularStockPorLotesServicio, editarLoteServicio, eliminarLoteServicio } from "../servicios/productos.js";
+import { añadirLoteServicio, calcularStockPorLotesServicio, editarLoteServicio, eliminarLoteServicio, restarInventarioLotesServicio, restarInventarioSimpleServicio } from "../servicios/productos.js";
 
 
 
@@ -54,7 +54,8 @@ export async function editarProducto(req, res) {
 export async function eliminarProducto(req, res) {
     try {
         const eliminacion = await eliminarUnProductoServicio(req.params.id_producto)
-        if (eliminacion.deletedCount===0){throw new Error("No se pudo eliminar el producto");
+        if (eliminacion.deletedCount === 0) {
+            throw new Error("No se pudo eliminar el producto");
         }
         res.status(200).json({ "mensaje": "Se eliminó el producto correctamente" })
     } catch (error) {
@@ -81,31 +82,54 @@ export async function añadirLote(req, res) {
     }
 }
 
-export async function editarLote(req, res){
+export async function editarLote(req, res) {
     try {
         const { tipo, cantidad } = req.body
         const numero_lote = req.params.numero_lote
         const lote_info = { cantidad, numero_lote }
-        if (tipo==="perecedero"){
+        if (tipo === "perecedero") {
             lote_info.fecha_vencimiento = req.body.fecha_vencimiento
         }
         const resultado = await editarLoteServicio(lote_info, req.params.id_producto, tipo)
-        if (resultado.modifiedCount===0){throw new Error("Error al modificar lote");}
+        if (resultado.modifiedCount === 0) { throw new Error("Error al modificar lote"); }
         await calcularStockPorLotesServicio(req.params.id_producto)
-        res.status(200).json({"Mensaje":"Lote modificado correctamente"})
+        res.status(200).json({ "Mensaje": "Lote modificado correctamente" })
     } catch (error) {
-        res.status(500).json({error:error.message})
+        res.status(500).json({ error: error.message })
     }
 }
 
 export async function eliminarLote(req, res) {
     try {
         const resultado = await eliminarLoteServicio(req.params.numero_lote, req.params.id_producto);
-        if (resultado.modifiedCount===0){throw new Error("Error al eliminar lote");}
+        if (resultado.modifiedCount === 0) { throw new Error("Error al eliminar lote"); }
         await calcularStockPorLotesServicio(req.params.id_producto)
-        res.status(200).json({"Mensaje":"Se eliminó el lote correctamente"})
+        res.status(200).json({ "Mensaje": "Se eliminó el lote correctamente" })
     } catch (error) {
-        res.status(500).json({error:error.message})
+        res.status(500).json({ error: error.message })
+    }
+}
+
+export async function restarInventarioSimple(req, res) {
+    try {
+        const cantidad = req.body.cantidad
+        const resultado = await restarInventarioSimpleServicio(cantidad, req.params.id_producto)
+        if (resultado.modifiedCount === 0) { throw new Error("Error al restar stock"); }
+        res.status(200).json({ "Mensaje": "Se restó del stock correctamente" })
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+export async function restarInventarioLotes(req, res) {
+    try {
+        const cantidad = req.body.cantidad
+        const resultado = await restarInventarioLotesServicio(cantidad, req.params.id_producto, req.params.numero_lote)
+        if (resultado.modifiedCount === 0) { throw new Error("Error al restar stock del lote"); }
+        await calcularStockPorLotesServicio(req.params.id_producto)
+        res.status(200).json({ "Mensaje": "Se restó del stock del lote correctamente" })
+    } catch (error) {
+        res.status(500).json({ error: error.message})
     }
 }
 

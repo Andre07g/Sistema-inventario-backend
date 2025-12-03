@@ -76,3 +76,13 @@ export async function eliminarLoteServicio(numero_lote, id_producto){
     const db = await obtenerBD();
     return await db.collection(COLECCION_PRODUCTOS).updateOne({_id:new ObjectId(id_producto),"lotes.numero_lote":numero_lote},{$pull:{lotes:{numero_lote:numero_lote}}})
 }
+
+export async function restarInventarioSimpleServicio(cantidad, id_producto){
+    const db = await obtenerBD();
+    return await db.collection(COLECCION_PRODUCTOS).updateOne({_id:new ObjectId(id_producto),stock: { $gte: cantidad }},{$inc:{stock:-cantidad}})
+}
+
+export async function restarInventarioLotesServicio(cantidad, id_producto, numero_lote) {
+    const db = await obtenerBD();
+    return await db.collection(COLECCION_PRODUCTOS).updateOne({_id: new ObjectId(id_producto),lotes: { $elemMatch: {numero_lote: numero_lote,cantidad: { $gte: cantidad }} }},{ $inc: { "lotes.$.cantidad": -cantidad }});
+}
