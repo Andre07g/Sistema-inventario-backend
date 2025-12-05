@@ -4,11 +4,8 @@ import { ObjectId } from "mongodb";
 
 // IMPORTE FUNCIONES
 
-
 import { obtenerProductosServicio, crearUnProductoServicio, editarUnProductoServicio, eliminarUnProductoServicio } from "../servicios/productos.js";
 import { añadirLoteServicio, calcularStockPorLotesServicio, editarLoteServicio, eliminarLoteServicio, restarInventarioLotesServicio, restarInventarioSimpleServicio } from "../servicios/productos.js";
-
-
 
 // FUNCIONES
 
